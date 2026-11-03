@@ -6,13 +6,14 @@ import {
   SafeAreaView,
 } from "react-native-safe-area-context";
 
-import TaskForm from "./src/components/TaskForm";
+
+import HomeScreen from "./src/screens/HomeScreen";
 
 export default function App() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <TaskForm />
+        <HomeScreen/>
       </SafeAreaView>
     </SafeAreaProvider>
   );

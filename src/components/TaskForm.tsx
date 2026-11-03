@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { COLORS } from "../constants/theme";
+import type { Task } from "../constants/types";
 
 import {
   Alert,
@@ -13,7 +14,11 @@ import {
   View,
 } from "react-native";
 
-export default function TaskForm() {
+type Props = {
+  onAddTask: (task: Task) => void;
+};
+
+export default function TaskForm({ onAddTask }: Props) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("Trabajo");
@@ -32,11 +37,13 @@ export default function TaskForm() {
     }
 
     const task = {
+      id: Date.now().toString(),
       title: title.trim(),
       description: description.trim(),
       category,
-      createdAt: new Date(),
+      createAt: new Date(),
     };
+    onAddTask(task);
 
     console.log("tarea ok", task);
     Alert.alert("Éxito", "Tarea capturada localmente");
