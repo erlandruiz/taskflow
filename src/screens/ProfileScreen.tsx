@@ -1,10 +1,55 @@
 
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 
 import { ProfileCard } from "../components/ProfileCards";
 import { COLORS } from "../constants/theme";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase/config";
 
 export function ProfileScreen() {
+
+  
+  // Cerrar la sesión del usuario en Firebase.
+  // Sign out the user from Firebase.
+  const handleLogout = () => {
+    Alert.alert(
+      "Cerrar sesión",
+      "¿Estás seguro de que deseas cerrar sesión?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Cerrar sesión",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await signOut(auth);
+            } catch (error) {
+              console.error(
+                "Error al cerrar sesión:",
+                error
+              );
+
+              Alert.alert(
+                "Error",
+                "No se pudo cerrar la sesión. Inténtalo nuevamente."
+              );
+            }
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <ScrollView
       style={styles.container}
@@ -38,6 +83,19 @@ export function ProfileScreen() {
          
         />
       </View>
+
+      
+      {/* Cerrar sesión / Sign out */}
+      <TouchableOpacity
+        style={styles.logoutButton}
+        onPress={handleLogout}
+      >
+        <Text style={styles.logoutText}>
+          Cerrar sesión
+        </Text>
+      </TouchableOpacity>
+
+
     </ScrollView>
   );
 }
@@ -73,4 +131,20 @@ const styles = StyleSheet.create({
   profileList: {
     gap: 12,
   },
+  
+  logoutButton: {
+    backgroundColor: "#DC2626",
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 30,
+  },
+
+  logoutText: {
+    color: "#FFFFFF",
+    fontSize: 17,
+    fontWeight: "700",
+  },
+
 });

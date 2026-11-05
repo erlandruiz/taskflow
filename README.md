@@ -1,4 +1,4 @@
-# TaskFlow — Entregas 2, 3, 4, 5 y 6
+# TaskFlow — Entregas 2, 3, 4, 5, 6 y 7
 
 Aplicación móvil de gestión de tareas desarrollada con **React Native, Expo y TypeScript** para el curso de Desarrollo de Aplicaciones de CoderHouse.
 
@@ -555,3 +555,107 @@ Se realizaron pruebas en Expo Go para comprobar:
 **Entrega 06:** Redux Store, tasksSlice, filtros globales, creación, actualización y eliminación de tareas implementados y probados localmente en Expo Go.
 
 Proyecto desarrollado como parte del curso de Desarrollo de Aplicaciones de CoderHouse.
+
+
+
+## Entrega 7 — Autenticación y Persistencia con Firebase
+
+Se integraron Firebase Authentication y Cloud Firestore
+para gestionar usuarios y almacenar las tareas en la nube.
+
+### Tecnologías incorporadas
+
+- Firebase SDK (`firebase`)
+- Firebase Authentication
+- Cloud Firestore
+- AsyncStorage para persistencia de sesión
+- Redux Toolkit para sincronización del estado global
+
+### Autenticación
+
+- Registro mediante correo electrónico y contraseña.
+- Inicio de sesión mediante Firebase Authentication.
+- Cierre de sesión desde Profile.
+- Recuperación automática de sesión con `onAuthStateChanged`.
+- Protección de las pantallas para usuarios no autenticados.
+
+### Persistencia de tareas
+
+Las tareas se guardan en la colección `tasks` de Cloud Firestore.
+
+Cada tarea contiene un campo `userId` que identifica
+a su propietario.
+
+Se implementaron las operaciones:
+
+- Crear tareas.
+- Consultar tareas por usuario.
+- Marcar tareas como completadas o pendientes.
+- Eliminar tareas.
+
+### Sincronización con Redux
+
+Se utiliza `onSnapshot` para recuperar los cambios
+de Firestore en tiempo real y actualizar el estado
+global mediante `setTasks`.
+
+### Seguridad
+
+Las reglas de Firestore verifican el UID del usuario
+autenticado para restringir el acceso a sus propias tareas.
+
+### Pruebas realizadas en Expo Go (iPhone)
+
+1. Registro exitoso de un usuario en Firebase.
+2. Inicio de sesión y acceso a Home.
+3. Cierre de sesión y regreso a Login.
+4. Recuperación automática de sesión al reiniciar.
+5. Creación de tareas y verificación en Firebase Console.
+6. Actualización del campo `completed` a `true`.
+7. Eliminación de tareas en Home y Firestore.
+8. Recuperación de tareas después de cerrar la aplicación.
+9. Verificación de que distintos usuarios ven sus propias tareas.
+10. Verificación de TypeScript con `npx tsc --noEmit`.
+
+### Resultado
+
+Las funcionalidades principales de autenticación,
+navegación protegida y persistencia en Firestore
+fueron implementadas y probadas en Expo Go.
+
+Las pruebas de funcionamiento sin conexión a Internet
+quedan pendientes.
+
+
+## Evidencias visuales — Entrega 07
+
+Capturas realizadas en un iPhone utilizando Expo Go.
+
+### 1. Inicio de sesión — Login
+
+Pantalla de autenticación con correo electrónico
+y contraseña mediante Firebase Authentication.
+
+![Login de TaskFlow](docs/screenshots/tarea07-login.jpeg)
+
+### 2. Registro de usuarios — Register
+
+Formulario de registro de usuarios utilizando
+Firebase Authentication.
+
+![Registro de usuarios](docs/screenshots/tarea07-register.jpeg)
+
+### 3. Tareas sincronizadas — Cloud Firestore
+
+Pantalla Home mostrando las tareas recuperadas
+desde Firestore y los filtros de Redux Toolkit.
+
+![Home con Firestore](docs/screenshots/tarea07-home-firestore.jpeg)
+
+### 4. Perfil y cierre de sesión
+
+Pantalla Profile con la opción Cerrar sesión,
+implementada mediante Firebase Authentication.
+
+![Profile con Logout](docs/screenshots/tarea07-profile-logout.jpeg)
+

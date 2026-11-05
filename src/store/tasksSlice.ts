@@ -1,4 +1,3 @@
-
 import { createSlice, nanoid } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
@@ -13,25 +12,14 @@ type TasksState = {
 
 // Tareas iniciales y filtro por defecto.
 // Initial tasks and default filter.
+
 const initialState: TasksState = {
-  tasks: [
-    {
-      id: "1",
-      title: "Estudiar React Native",
-      description: "Repasar FlatList y componentes",
-      category: "Estudio",
-      createdAt: new Date().toISOString(),
-      completed: false,
-    },
-    {
-      id: "2",
-      title: "Crear TaskFlow",
-      description: "Continuar con el proyecto de tareas",
-      category: "Trabajo",
-      createdAt: new Date().toISOString(),
-      completed: false,
-    },
-  ],
+  // Las tareas se cargarán desde Firestore.
+  // Tasks will be loaded from Firestore.
+  tasks: [],
+
+  // Filtro inicial.
+  // Default filter.
   filter: "all",
 };
 
@@ -68,9 +56,7 @@ const tasksSlice = createSlice({
     // Alternar el estado de completado.
     // Toggle the task completion status.
     toggleTaskStatus: (state, action: PayloadAction<string>) => {
-      const task = state.tasks.find(
-        (item) => item.id === action.payload
-      );
+      const task = state.tasks.find((item) => item.id === action.payload);
 
       if (task) {
         task.completed = !task.completed;
@@ -80,9 +66,7 @@ const tasksSlice = createSlice({
     // Eliminar una tarea por ID.
     // Delete a task by ID.
     deleteTask: (state, action: PayloadAction<string>) => {
-      state.tasks = state.tasks.filter(
-        (item) => item.id !== action.payload
-      );
+      state.tasks = state.tasks.filter((item) => item.id !== action.payload);
     },
 
     // Cambiar el filtro global.
@@ -90,14 +74,16 @@ const tasksSlice = createSlice({
     setFilter: (state, action: PayloadAction<TaskFilter>) => {
       state.filter = action.payload;
     },
+
+    // Sincronizar las tareas recibidas desde Firestore.
+    // Synchronize tasks received from Firestore.
+    setTasks: (state, action: PayloadAction<Task[]>) => {
+      state.tasks = action.payload;
+    },
   },
 });
 
-export const {
-  addTask,
-  toggleTaskStatus,
-  deleteTask,
-  setFilter,
-} = tasksSlice.actions;
+export const { addTask, toggleTaskStatus, deleteTask, setFilter, setTasks } =
+  tasksSlice.actions;
 
 export default tasksSlice.reducer;

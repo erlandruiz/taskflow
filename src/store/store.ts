@@ -1,12 +1,15 @@
 
 import { configureStore } from "@reduxjs/toolkit";
 import tasksReducer from "./tasksSlice";
+import authReducer from "./authSlice";
 
 // Configurar el Store global de la aplicación.
 // Configure the application's global Store.
+
 export const store = configureStore({
   reducer: {
     tasks: tasksReducer,
+    auth: authReducer,
   },
 });
 

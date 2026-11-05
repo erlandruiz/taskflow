@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { COLORS } from "../constants/theme";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "../store/store";
-import { addTask } from "../store/tasksSlice";
+
+import { createTask } from "../services/tasksFirestore";
 
 import {
   Alert,
@@ -28,9 +27,6 @@ type TaskFormNavProp = NativeStackNavigationProp<
 export default function TaskForm() {
   const navigation = useNavigation<TaskFormNavProp>();
 
-  // Obtener dispatch de Redux.
-  // Get Redux dispatch.
-  const dispatch = useDispatch<AppDispatch>();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("Trabajo");
@@ -41,34 +37,46 @@ export default function TaskForm() {
   const [focusedTitle, setFocusedTitle] = useState(false);
   const [focusedDescription, setFocusedDescription] = useState(false);
 
-  const handleAddTask = () => {
+  const handleAddTask = async () => {
     setTouchedTitle(true);
     setTouchedDescription(true);
+
+    // Validar los campos.
+    // Validate form fields.
     if (title.trim().length < 5 || description.trim().length < 10) {
       return;
     }
 
-    // Guardar la tarea directamente en Redux.
-    // Save the task directly to Redux.
-    dispatch(
-      addTask({
+    try {
+      // Guardar la tarea en Cloud Firestore.
+      // Save the task to Cloud Firestore.
+      await createTask({
         title: title.trim(),
         description: description.trim(),
         category,
-      }),
-    );
+      });
 
-    Alert.alert("Éxito", "Tarea guardada en el Store global");
+      Alert.alert("Éxito", "Tarea registrada correctamente.");
 
-   
+      // Limpiar el formulario.
+      // Reset the form.
+      setTitle("");
+      setDescription("");
+      setCategory("Trabajo");
+      setTouchedTitle(false);
+      setTouchedDescription(false);
 
-    setTitle("");
-    setDescription("");
-    setCategory("Trabajo");
-    setTouchedTitle(false);
-    setTouchedDescription(false);
+      // Regresar a la lista.
+      // Return to task list.
+      navigation.navigate("TaskList");
+    } catch (error) {
+      console.error("Error al guardar la tarea:", error);
 
-    navigation.navigate("TaskList");
+      Alert.alert(
+        "Error",
+        "No se pudo guardar la tarea. Revisa tu conexión a Internet.",
+      );
+    }
   };
 
   const titleError = touchedTitle && title.trim().length < 5;
