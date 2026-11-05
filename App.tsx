@@ -8,12 +8,13 @@ import {
 
 
 import HomeScreen from "./src/screens/HomeScreen";
+import AppNavigator from "./src/navigation/AppNavigator";
 
 export default function App() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <HomeScreen/>
+        <AppNavigator/>
       </SafeAreaView>
     </SafeAreaProvider>
   );

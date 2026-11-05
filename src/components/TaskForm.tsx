@@ -14,11 +14,19 @@ import {
   View,
 } from "react-native";
 
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { TaskStackParamList } from "../navigation/TasksStack";
+
+
 type Props = {
   onAddTask: (task: Task) => void;
 };
 
+type TaskFormNavProp = NativeStackNavigationProp<TaskStackParamList, "TaskForm">
+
 export default function TaskForm({ onAddTask }: Props) {
+  const navigation = useNavigation<TaskFormNavProp>();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("Trabajo");
@@ -53,6 +61,8 @@ export default function TaskForm({ onAddTask }: Props) {
     setCategory("Trabajo");
     setTouchedTitle(false);
     setTouchedDescription(false);
+
+    navigation.navigate("TaskList")
   };
 
   const titleError = touchedTitle && title.trim().length < 5;

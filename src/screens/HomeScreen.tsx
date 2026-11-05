@@ -7,66 +7,67 @@ import {
 } from "react-native";
 import { COLORS } from "../constants/theme";
 import TaskForm from "../components/TaskForm";
-import { useState } from "react";
+
 import { EmptyState } from "../components/EmptyState";
 import TaskDetail from "../components/TaskDetail";
 import { Task } from "../constants/types";
 
-export default function HomeScreen() {
-  const [task, setTask] = useState<Task[]>([
-    {
-      id: "1",
-      title: "Estudiar React Native",
-      description: "Repasar Flatlist y componentes",
-      category: "Estudio",
-      createAt: new Date(),
-    },
-    {
-      id: "2",
-      title: "Crear TaskFlow",
-      description: "Continuar con el proyecto de tareas",
-      category: "Trabajo",
-      createAt: new Date(),
-    },
-  ]);
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
+import { TaskStackParamList } from "../navigation/TasksStack";
 
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [showForm, setShowForm] = useState(false);
+type HomeNavProp = NativeStackNavigationProp<TaskStackParamList, "TaskList">;
+type Props = {
+  tasks: Task[];
+};
 
-  const handleAddTask = (newTask: Task) => {
-    setTask((previousTasks) => [newTask, ...previousTasks]);
+export default function HomeScreen({ tasks }: Props) {
+  const navigation = useNavigation<HomeNavProp>();
 
-    setShowForm(false);
+  // const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  // const [showForm, setShowForm] = useState(false);
+
+  // const handleAddTask = (newTask: Task) => {
+  //   setTask((previousTasks) => [newTask, ...previousTasks]);
+
+  //   setShowForm(false);
+  // };
+
+  // if (selectedTask) {
+  //   return (
+  //     <TaskDetail task={selectedTask} onBack={() => setSelectedTask(null)} />
+  //   );
+  // }
+  // if (showForm) {
+  //   return <TaskForm onAddTask={handleAddTask} />;
+  // }
+
+
+const handleTaskPress = (task: Task) => {
+  // Enviar únicamente el ID de la tarea.
+  // Send only the task ID.
+  navigation.navigate("TaskDetail", {
+    id: task.id,
+  });
+};
+
+
+  const handleAddPress = () => {
+    navigation.navigate("TaskForm");
   };
 
-  if (selectedTask) {
-    return (
-      <TaskDetail task={selectedTask} onBack={() => setSelectedTask(null)} />
-    );
-  }
-  if (showForm) {
-    return <TaskForm onAddTask={handleAddTask} />;
-  }
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Mis tareas</Text>
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => setShowForm(true)}
-      >
-        <Text style={styles.addButtonText}>+ Nueva tarea</Text>
-      </TouchableOpacity>
-
-      {task.length === 0 ? (
+      {tasks.length === 0 ? (
         <EmptyState />
       ) : (
         <FlatList
-          data={task}
+          data={tasks}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.card}
-              onPress={() => setSelectedTask(item)}
+              onPress={() => handleTaskPress(item)}
             >
               <Text style={styles.cardTitle}>{item.title}</Text>
               <Text style={styles.cardCategory}>{item.category}</Text>
@@ -74,6 +75,9 @@ export default function HomeScreen() {
           )}
         />
       )}
+      <TouchableOpacity style={styles.addButton} onPress={handleAddPress}>
+        <Text style={styles.addButtonText}>+</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -120,18 +124,23 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.textLight,
   },
+
   addButton: {
     backgroundColor: COLORS.primary,
-    paddingVertical: 14,
-    paddingHorizontal: 20,
-    borderRadius: 12,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     alignItems: "center",
-    marginBottom: 20,
+    justifyContent: "center",
+    alignSelf: "flex-end",
+    marginTop: 15,
+    elevation: 4,
   },
 
   addButtonText: {
     color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "700",
+    fontSize: 36,
+    fontWeight: "400",
+    lineHeight: 42,
   },
 });

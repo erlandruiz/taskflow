@@ -24,7 +24,7 @@ export function ProfileScreen() {
         />
 
         <ProfileCard
-          name="Erland Ruiz Rivera"
+          name="Erland Ruiz"
           role="Estudiante de React Native"
           image="https://i.pravatar.cc/150?img=12"
            isActive={true}
