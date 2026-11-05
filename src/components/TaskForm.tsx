@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { COLORS } from "../constants/theme";
-import type { Task } from "../constants/types";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../store/store";
+import { addTask } from "../store/tasksSlice";
 
 import {
   Alert,
@@ -15,18 +17,20 @@ import {
 } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { TaskStackParamList } from "../navigation/TasksStack";
 
+type TaskFormNavProp = NativeStackNavigationProp<
+  TaskStackParamList,
+  "TaskForm"
+>;
 
-type Props = {
-  onAddTask: (task: Task) => void;
-};
-
-type TaskFormNavProp = NativeStackNavigationProp<TaskStackParamList, "TaskForm">
-
-export default function TaskForm({ onAddTask }: Props) {
+export default function TaskForm() {
   const navigation = useNavigation<TaskFormNavProp>();
+
+  // Obtener dispatch de Redux.
+  // Get Redux dispatch.
+  const dispatch = useDispatch<AppDispatch>();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("Trabajo");
@@ -44,17 +48,19 @@ export default function TaskForm({ onAddTask }: Props) {
       return;
     }
 
-    const task = {
-      id: Date.now().toString(),
-      title: title.trim(),
-      description: description.trim(),
-      category,
-      createAt: new Date(),
-    };
-    onAddTask(task);
+    // Guardar la tarea directamente en Redux.
+    // Save the task directly to Redux.
+    dispatch(
+      addTask({
+        title: title.trim(),
+        description: description.trim(),
+        category,
+      }),
+    );
 
-    console.log("tarea ok", task);
-    Alert.alert("Éxito", "Tarea capturada localmente");
+    Alert.alert("Éxito", "Tarea guardada en el Store global");
+
+   
 
     setTitle("");
     setDescription("");
@@ -62,7 +68,7 @@ export default function TaskForm({ onAddTask }: Props) {
     setTouchedTitle(false);
     setTouchedDescription(false);
 
-    navigation.navigate("TaskList")
+    navigation.navigate("TaskList");
   };
 
   const titleError = touchedTitle && title.trim().length < 5;
